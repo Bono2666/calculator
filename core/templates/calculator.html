@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <title>
+    Calculator
+  </title>
+
+  <!-- Favicon - loaded as static -->
+  <link rel="icon" href="" type="image/png">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <!-- CSS -->
+  <link id="pagestyle" href="/core/static/css/soft-ui-dashboard.css" rel="stylesheet" />
+  <!-- CSS jQuery UI -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
+  <!-- Specific CSS goes HERE -->
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+
+<body class="">
+
+    <div class="main-content position-relative min-vh-100 pb-4">
+        
+        <div class="mb-6">
+            <div class="container-fluid mt-0 w-30">
+                <div class="row">
+                    <div class="col-xl-12 order-xl-1">
+                        <form action="{% url 'calculator' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-12 d-flex align-items-center">
+                                            <h5 class="mb-4">Calculator</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="pl-lg-0">
+                                        <div class="row mb-4">
+                                            <div class="col-md-12">
+                                                <div class="shadow-none">
+                                                    <input type="text" name="num1" id="num1" class="form-control" disabled value="{% if result %}{{ result }}{% else %}{{ num1 }}{% endif %}">
+                                                    <input type="text" name="num2" id="num2" class="form-control d-none" value="{{ num2 }}">
+                                                    <input type="text" name="operator" id="operator" class="form-control d-none" value="{{ operator }}">
+                                                </div>  
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn7">7</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn8">8</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn9">9</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btndiv">/</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn4">4</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn5">5</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn6">6</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btnmul">x</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn1">1</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn2">2</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <a type="button" class="btn" id="btn3">3</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btnmin">-</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btnclr">C</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btn0">0</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <a type="button" class="btn" id="btneq">=</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="shadow-none">
+                                                    <button type="button" class="btn" id="btnplus">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var num1 = 0;
+            var num2 = 0;
+            var operator = '';
+            var result = 0;
+            let btn7 = document.getElementById('btn7');
+            let btn8 = document.getElementById('btn8');
+            let btn9 = document.getElementById('btn9');
+            let btndiv = document.getElementById('btndiv');
+            let btn4 = document.getElementById('btn4');
+            let btn5 = document.getElementById('btn5');
+            let btn6 = document.getElementById('btn6');
+            let btnmul = document.getElementById('btnmul');
+            let btn1 = document.getElementById('btn1');
+            let btn2 = document.getElementById('btn2');
+            let btn3 = document.getElementById('btn3');
+            let btnmin = document.getElementById('btnmin');
+            let btn0 = document.getElementById('btn0');
+            let btnclr = document.getElementById('btnclr');
+            let btneq = document.getElementById('btneq');
+            let btnplus = document.getElementById('btnplus');
+            let x = document.getElementById('num1');
+            let y = document.getElementById('num2');
+            let ops = document.getElementById('operator');
+
+            btn0.addEventListener('click', function() {
+                num1 = num1 * 10 + 0;
+                x.value = num1;
+            });
+
+            btn1.addEventListener('click', function() {
+                num1 = num1 * 10 + 1;
+                x.value = num1;
+            });
+
+            btn2.addEventListener('click', function() {
+                num1 = num1 * 10 + 2;
+                x.value = num1;
+            });
+
+            btn3.addEventListener('click', function() {
+                num1 = num1 * 10 + 3;
+                x.value = num1;
+            });
+
+            btn4.addEventListener('click', function() {
+                num1 = num1 * 10 + 4;
+                x.value = num1;
+            });
+
+            btn5.addEventListener('click', function() {
+                num1 = num1 * 10 + 5;
+                x.value = num1;
+            });
+
+            btn6.addEventListener('click', function() {
+                num1 = num1 * 10 + 6;
+                x.value = num1;
+            });
+
+            btn7.addEventListener('click', function() {
+                num1 = num1 * 10 + 7;
+                x.value = num1;
+            });
+
+            btn8.addEventListener('click', function() {
+                num1 = num1 * 10 + 8;
+                x.value = num1;
+            });
+
+            btn9.addEventListener('click', function() {
+                num1 = num1 * 10 + 9;
+                x.value = num1;
+            });
+
+            btnplus.addEventListener('click', function() {
+                num2 = num1;
+                num1 = 0;
+                operator = 'add';
+                x.value = num2;
+                y.value = num2;
+                ops.value = operator;
+            });
+
+            btnmin.addEventListener('click', function() {
+                num2 = num1;
+                num1 = 0;
+                operator = 'sub';
+                x.value = num2;
+                y.value = num2;
+                ops.value = operator;
+            });
+
+            btnmul.addEventListener('click', function() {
+                num2 = num1;
+                num1 = 0;
+                operator = 'mul';
+                x.value = num2;
+                y.value = num2;
+                ops.value = operator;
+            });
+
+            btndiv.addEventListener('click', function() {
+                num2 = num1;
+                num1 = 0;
+                operator = 'div';
+                x.value = num2;
+                y.value = num2;
+                ops.value = operator;
+            });
+
+            btnclr.addEventListener('click', function() {
+                num1 = 0;
+                num2 = 0;
+                operator = '';
+                x.value = num1;
+                y.value = num2;
+                ops.value = operator;
+            });
+
+            btneq.addEventListener('click', function() {
+                // run the calculation
+                let url = "{% url 'calculation' %}?x=" + num2 + "&y=" + num1 + "&operator=" + operator;
+                btneq.href = url
+            });
+        });
+    </script>
+</body>
+</html>
